@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Research · PHI Lab, University of Oxford</title>
+  <meta name="description" content="Research projects and publications from the PHI Lab: malaria forecasting, climate and child health, flood and disaster mapping, genomics and clinical AI.">
+  <link rel="icon" href="assets/img/phi-logo-white.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <img src="assets/img/phi-logo-white.png" alt="">
+      <span><b>PHI LAB</b><small>University of Oxford</small></span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="research.html" aria-current="page">Research</a>
+      <a href="#publications">Publications</a>
+      <a href="about.html">About</a>
+      <div class="social" data-social aria-label="PHI Lab online"></div>
+      <a class="nav-cta" href="mailto:oxfordphi@gmail.com">Contact us</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="home-hero on-dark has-figure" style="padding:72px 0 64px">
+  <div class="hero-figure" aria-hidden="true"></div>
+  <div class="wrap">
+    <span class="eyebrow">Research</span>
+    <h1 style="font-size:clamp(36px,5vw,60px)">Our research</h1>
+    <p class="lede" style="margin-bottom:0">Climate, disease and health, studied with satellites, AI and real-world data. Choose a theme, or open a study to explore it at your own level.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:48px">
+  <div class="wrap">
+    <div class="filters" role="group" aria-label="Filter by theme">
+      <button type="button" class="chip" data-filter="all" aria-pressed="true">All themes</button>
+      <button type="button" class="chip" data-filter="climate" aria-pressed="false" style="--c:var(--orange)"><span class="dot"></span>Climate &amp; child health</button>
+      <button type="button" class="chip" data-filter="malaria" aria-pressed="false" style="--c:var(--rose)"><span class="dot"></span>Malaria forecasting</button>
+      <button type="button" class="chip" data-filter="flood" aria-pressed="false" style="--c:var(--cyan)"><span class="dot"></span>Flood &amp; disaster mapping</button>
+      <button type="button" class="chip" data-filter="genomics" aria-pressed="false" style="--c:var(--purple)"><span class="dot"></span>Genomics · Clinical AI · Data</button>
+    </div>
+
+    <h2 style="font-size:28px;margin:8px 0 18px">Featured studies</h2>
+    <div id="featured">
+      <a class="pcard reveal" data-theme="malaria" href="projects/malaria-project/index.html">
+        <img src="projects/malaria-project/media/figures/map-mlstm.jpg" alt="Map comparing predicted and true malaria incidence across South Asia" width="1600" height="1236" loading="lazy">
+        <div class="body">
+          <span class="tag"><span class="dot" style="--c:var(--rose)"></span>Malaria forecasting</span>
+          <h3>Predicting malaria outbreaks from space</h3>
+          <p style="color:var(--ink-2);margin:0">A deep learning model that fuses 17 years of satellite and climate data to forecast district-level malaria across Pakistan, India and Bangladesh.</p>
+          <div class="meta">
+            <span class="tag">NeurIPS 2023</span><span class="tag">Lancet Planetary Health 2024</span><span class="tag">Interactive charts</span><span class="tag">Interactive maps</span>
+          </div>
+          <div class="go">Explore the study →</div>
+        </div>
+      </a>
+      <p class="empty" data-empty-note="featured" hidden style="color:var(--muted)">The full story for this theme is coming soon. See the projects in progress below.</p>
+    </div>
+
+    <h2 style="font-size:28px;margin:64px 0 6px">In the pipeline</h2>
+    <p style="color:var(--muted);margin-bottom:22px">Projects being prepared for public release. Their full interactive stories are on the way.</p>
+    <div class="pipeline-list" id="pipeline">
+      <div class="item" data-theme="climate" style="--c:var(--cyan)"><span class="num">01</span><div><b>Satellite AI for childhood respiratory infections</b><span>11 countries · 9,271 DHS clusters · 2017–2022</span><div class="soon">Coming soon</div></div></div>
+      <div class="item" data-theme="climate" style="--c:var(--orange)"><span class="num">02</span><div><b>Rising heat and child wasting</b><span>35 countries · DHS 2000–2023</span><div class="soon">Coming soon</div></div></div>
+      <div class="item" data-theme="malaria" style="--c:var(--rose)"><span class="num">03</span><div><b>Pan-African malaria forecasting</b><span>44 countries · 5 km grid · 2000–2024</span><div class="soon">Coming soon</div></div></div>
+      <div class="item" data-theme="malaria" style="--c:var(--purple)"><span class="num">04</span><div><b>Malaria transmission intensity in India</b><span>India · district level · forecast 2024</span><div class="soon">Coming soon</div></div></div>
+      <div class="item" data-theme="malaria" style="--c:var(--rose)"><span class="num">05</span><div><b>Regional malaria forecasting in Nigeria</b><span>Nigeria · 4,352 locations · forecast 2024</span><div class="soon">Coming soon</div></div></div>
+      <div class="item" data-theme="flood" style="--c:var(--cyan)"><span class="num">06</span><div><b>Real-time flood nowcasting</b><span>Sialkot, Pakistan · 26 Aug – 14 Sep 2025</span><div class="soon">Coming soon</div></div></div>
+      <div class="item" data-theme="flood" style="--c:var(--cyan)"><span class="num">07</span><div><b>Flood depth across South Asia</b><span>Pakistan · India · Bangladesh · Sri Lanka · 2025 monsoon</span><div class="soon">Coming soon</div></div></div>
+      <div class="item" data-theme="flood" style="--c:var(--orange)"><span class="num">08</span><div><b>Schools and clinics in flood zones</b><span>6 South Asian countries · 145,176 facilities</span><div class="soon">Coming soon</div></div></div>
+      <div class="item" data-theme="flood" style="--c:var(--rose)"><span class="num">09</span><div><b>Rapid loss &amp; damage: Nepal 2026</b><span>Nepal · 77 districts · 26–29 Aug 2026</span><div class="soon">Coming soon</div></div></div>
+      <div class="item" data-theme="flood" style="--c:var(--purple)"><span class="num">10</span><div><b>Precipitation and multi-hazard risk</b><span>Khyber Pakhtunkhwa, Pakistan · Jun–Sep 2025</span><div class="soon">Coming soon</div></div></div>
+      <div class="item" data-theme="flood" style="--c:var(--orange)"><span class="num">11</span><div><b>Earthquake rapid loss assessment</b><span>Central Flores, Indonesia · ~40 × 40 km area</span><div class="soon">Coming soon</div></div></div>
+      <div class="item" data-theme="genomics" style="--c:var(--rose)"><span class="num">12</span><div><b>Genome × climate: heat-shock variants</b><span>21 HSE arrays · 17 heat-response genes · UK Biobank</span><div class="soon">Coming soon</div></div></div>
+      <div class="item" data-theme="genomics" style="--c:var(--cyan)"><span class="num">13</span><div><b>Open MSK imaging AI along the care pathway</b><span>VerSe · OAI · MURA · GRAZPEDWRI-DX</span><div class="soon">Coming soon</div></div></div>
+      <div class="item" data-theme="genomics" style="--c:var(--cyan)"><span class="num">14</span><div><b>DHS geospatial data pipeline</b><span>43 countries · DHS modelled surfaces · ~5 km resolution</span><div class="soon">Coming soon</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="publications">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Publications</span>
+      <h2>Papers, talks and open resources</h2>
+      <p class="lede">If our work helps yours, please cite it. Each study page has ready-made citations in four formats.</p>
+    </div>
+    <ul class="pubs">
+      <li class="pub reveal">
+        <div>
+          <span class="kind">2024 · Journal abstract</span>
+          <h3><a href="https://doi.org/10.1016/S2542-5196(24)00082-2" target="_blank" rel="noopener">Predicting malaria outbreaks using earth observation measurements and spatiotemporal deep learning modelling: a South Asian case study from 2000 to 2017</a></h3>
+          <div class="by">Nazir U, Quddoos MT, Uppal M, Khalid S · <i>The Lancet Planetary Health</i> 2024; 8: S17</div>
+        </div>
+        <div class="actions">
+          <a class="btn btn-outline btn-sm" href="https://doi.org/10.1016/S2542-5196(24)00082-2" target="_blank" rel="noopener">DOI</a>
+          <a class="btn btn-outline btn-sm" href="projects/malaria-project/index.html#cite">Cite</a>
+        </div>
+      </li>
+      <li class="pub reveal">
+        <div>
+          <span class="kind">2023 · Conference paper</span>
+          <h3><a href="projects/malaria-project/index.html">Towards a spatio-temporal deep learning approach to predict malaria outbreaks using earth observation measurements in South Asia</a></h3>
+          <div class="by">Nazir U, Ejaz A, Quddoos MT, Uppal M, Khalid S · NeurIPS 2023 Workshop on Tackling Climate Change with Machine Learning</div>
+        </div>
+        <div class="actions">
+          <a class="btn btn-outline btn-sm" href="https://slideslive.com/39012777" target="_blank" rel="noopener">Talk</a>
+          <a class="btn btn-outline btn-sm" href="projects/malaria-project/index.html#cite">Cite</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <a class="brand" href="index.html"><img src="assets/img/phi-logo-white.png" alt=""><span><b>PHI LAB</b><small>University of Oxford</small></span></a>
+        <p><b style="color:#fff">AI for Planet and Health.</b> Using AI, satellite imagery and real-world data to understand disease and close gaps in global health.</p>
+        <div class="social" data-social aria-label="PHI Lab online"></div>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="research.html">Research</a></li>
+          <li><a href="#publications">Publications</a></li>
+          <li><a href="about.html">About the lab</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:oxfordphi@gmail.com">oxfordphi@gmail.com</a></li>
+          <li><a href="https://www.ndorms.ox.ac.uk/" target="_blank" rel="noopener">NDORMS, University of Oxford</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">Produced by the PHI Lab, University of Oxford. Preliminary results — not for circulation without written permission. © <span data-year>2026</span> PHI Lab, University of Oxford</div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Predicting malaria from space · PHI Lab, University of Oxford</title>
+  <meta name="description" content="A deep learning model that reads 17 years of satellite and climate data to predict district-level malaria in Pakistan, India and Bangladesh. NeurIPS 2023 · The Lancet Planetary Health 2024.">
+  <link rel="icon" href="../../assets/img/phi-logo-white.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/site.css">
+  <style>:root { --accent: var(--rose); }</style>
+
+  <!-- Social sharing -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Predicting malaria outbreaks from space">
+  <meta property="og:description" content="Satellite data + deep learning to forecast district-level malaria across South Asia. PHI Lab, University of Oxford × LUMS.">
+  <meta property="og:image" content="media/hero-mosquito.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Google Scholar / Zotero / Mendeley indexing (Highwire Press tags) -->
+  <meta name="citation_title" content="Towards a spatio-temporal deep learning approach to predict malaria outbreaks using earth observation measurements in South Asia">
+  <meta name="citation_author" content="Nazir, Usman">
+  <meta name="citation_author_institution" content="Lahore University of Management Sciences">
+  <meta name="citation_author" content="Ejaz, Ahzam">
+  <meta name="citation_author_institution" content="Lahore University of Management Sciences">
+  <meta name="citation_author" content="Quddoos, Muhammad Talha">
+  <meta name="citation_author_institution" content="Lahore University of Management Sciences">
+  <meta name="citation_author" content="Uppal, Momin">
+  <meta name="citation_author_institution" content="Lahore University of Management Sciences">
+  <meta name="citation_author" content="Khalid, Sara">
+  <meta name="citation_author_institution" content="University of Oxford">
+  <meta name="citation_publication_date" content="2023/12">
+  <meta name="citation_conference_title" content="NeurIPS 2023 Workshop on Tackling Climate Change with Machine Learning">
+  <meta name="citation_abstract_html_url" content="https://www.climatechange.ai/papers/neurips2023/66">
+  <meta name="citation_keywords" content="malaria; earth observation; deep learning; LSTM; South Asia; planetary health; climate and health">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "ScholarlyArticle",
+        "headline": "Towards a spatio-temporal deep learning approach to predict malaria outbreaks using earth observation measurements in South Asia",
+        "author": [
+          {"@type": "Person", "name": "Usman Nazir", "affiliation": "Lahore University of Management Sciences"},
+          {"@type": "Person", "name": "Ahzam Ejaz", "affiliation": "Lahore University of Management Sciences"},
+          {"@type": "Person", "name": "Muhammad Talha Quddoos", "affiliation": "Lahore University of Management Sciences"},
+          {"@type": "Person", "name": "Momin Uppal", "affiliation": "Lahore University of Management Sciences"},
+          {"@type": "Person", "name": "Sara Khalid", "affiliation": "University of Oxford"}
+        ],
+        "datePublished": "2023-12",
+        "isPartOf": {"@type": "Event", "name": "NeurIPS 2023 Workshop on Tackling Climate Change with Machine Learning"},
+        "url": "https://www.climatechange.ai/papers/neurips2023/66",
+        "keywords": "malaria, earth observation, deep learning, South Asia, climate and health"
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "headline": "Predicting malaria outbreaks using earth observation measurements and spatiotemporal deep learning modelling: a South Asian case study from 2000 to 2017",
+        "author": [
+          {"@type": "Person", "name": "Usman Nazir"}, {"@type": "Person", "name": "Muhammad Talha Quddoos"},
+          {"@type": "Person", "name": "Momin Uppal"}, {"@type": "Person", "name": "Sara Khalid"}
+        ],
+        "datePublished": "2024-04",
+        "isPartOf": {"@type": "Periodical", "name": "The Lancet Planetary Health"},
+        "sameAs": "https://doi.org/10.1016/S2542-5196(24)00082-2"
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../../index.html">
+      <img src="../../assets/img/phi-logo-white.png" alt="">
+      <span><b>PHI LAB</b><small>University of Oxford</small></span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="../../index.html">Home</a>
+      <a href="../../research.html" aria-current="page">Research</a>
+      <a href="../../research.html#publications">Publications</a>
+      <a href="../../about.html">About</a>
+      <div class="social" data-social aria-label="PHI Lab online"></div>
+      <a class="nav-cta" href="#cite">Cite this study</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ===================== HERO ===================== -->
+<section class="phero on-dark">
+  <div class="bg" style="background-image:url('media/hero-mosquito.jpg')" role="img" aria-label="A mosquito resting on a green leaf"></div>
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="../../research.html">Research</a> &nbsp;/&nbsp; Malaria forecasting</nav>
+    <span class="eyebrow">Malaria forecasting · South Asia</span>
+    <h1>Predicting malaria outbreaks from space</h1>
+    <p class="paper-title">Towards a spatio-temporal deep learning approach to predict malaria outbreaks using earth observation measurements in South Asia</p>
+    <p class="authors">Usman Nazir, Ahzam Ejaz, Muhammad Talha Quddoos, Momin Uppal (LUMS) &nbsp;·&nbsp; Sara Khalid (University of Oxford)</p>
+    <div class="venues">
+      <span>NeurIPS 2023 · Climate Change AI workshop</span>
+      <span>The Lancet Planetary Health · 2024</span>
+    </div>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="https://www.climatechange.ai/papers/neurips2023/66" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5zM20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/></svg>Read the paper</a>
+      <a class="btn btn-light" href="#cite">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h4v4H7zM13 7h4v4h-4zM7 11c0 3-1 5-3 6M13 11c0 3-1 5-3 6"/></svg>Cite this work</a>
+      <a class="btn btn-ghost" href="https://slideslive.com/39012777" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.9l10.2-6.5a1 1 0 0 0 0-1.7L9.5 4.6A1 1 0 0 0 8 5.5z"/></svg>Watch the talk</a>
+    </div>
+  </div>
+  <span class="photo-credit">Photo: Erik Karits / Unsplash</span>
+</section>
+
+<nav class="subnav" aria-label="On this page">
+  <div class="wrap">
+    <a href="#summary">In one minute</a>
+    <a href="#problem">The problem</a>
+    <a href="#explore">Explore the data</a>
+    <a href="#method">How it works</a>
+    <a href="#results">Results</a>
+    <a href="#impact">Implications</a>
+    <a href="#team">Team</a>
+    <a href="#outputs">Publications</a>
+    <a class="cite-link" href="#cite">Cite ↓</a>
+  </div>
+</nav>
+
+<!-- ===================== SUMMARY + LENS ===================== -->
+<section class="section" id="summary">
+  <div class="wrap">
+    <div class="lens-bar" role="group" aria-label="PHI Lens: choose the perspective this page is written from">
+      <span class="q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.4"/><path d="M12 3v5.6M12 15.4V21M3 12h5.6M15.4 12H21"/></svg>PHI Lens</span>
+      <div class="seg">
+        <button type="button" data-set-lens="everyone" aria-pressed="true">Everyone</button>
+        <button type="button" data-set-lens="policy" aria-pressed="false">Policy &amp; health teams</button>
+        <button type="button" data-set-lens="research" aria-pressed="false">Researchers</button>
+      </div>
+      <span class="hint">One study, seen through your lens</span>
+    </div>
+
+    <div class="summary">
+      <div>
+        <span class="eyebrow">In one minute</span>
+
+        <div class="prose" data-lens="everyone">
+          <p class="big">About half the world’s population lives where malaria can spread. Knowing <em>where</em> it will strike next helps health workers get there first.</p>
+          <p>Mosquitoes that carry malaria do best in warm, wet, green places, and poorer communities are hit hardest. Satellites photograph all of these things, every year, for free.</p>
+          <p>We taught a computer model to read 17 years of satellite pictures and weather records for more than 32,000 places across Pakistan, India and Bangladesh. It then predicted how much malaria each district would have the following year. Its predictions were much closer to reality than an earlier AI method.</p>
+        </div>
+
+        <div class="prose" data-lens="policy">
+          <p class="big">A low-cost way to estimate malaria risk district by district, built entirely from data that already exists.</p>
+          <p>The model combines freely available satellite measurements (night-time lights, vegetation, rainfall, temperature) with household-survey malaria records. It produces a malaria incidence estimate for every district in Pakistan, India and Bangladesh.</p>
+          <p>Tested on 2017, it tracked real incidence closely in India and outperformed an established deep-learning method in all three countries. The same approach can be applied to other diseases that are sensitive to climate. It is a step towards <b>regional early-warning systems</b> that let programmes position bed nets, spraying and staff ahead of rising risk.</p>
+        </div>
+
+        <div class="prose" data-lens="research">
+          <p class="big">A multi-dimensional LSTM (M-LSTM) that fuses 43 earth-observation and survey features per location-year to forecast district-level <i>P. falciparum</i> incidence.</p>
+          <p>Training data: 32,172 DHS locations (Pakistan 1,517 · India 28,395 · Bangladesh 2,260), 2000–2016, with monthly temperature, rainfall and NDVI, annual night-time lights (DMSP-OLS / VIIRS), location and previous-year incidence. The architecture has 4 LSTM layers × 100 units, then a fully connected layer and linear regression.</p>
+          <p>Evaluation: a spatio-temporal split (predict 2017) and a spatial 80/20 split, against Conv-LSTM (Shi et al., 2015) and Random Forest (100 trees). The paper reports an average 29.41% RMSE reduction versus Conv-LSTM. Code and data are public.</p>
+        </div>
+      </div>
+
+      <aside>
+        <div class="key-msg">
+          <span class="eyebrow">Key message</span>
+          <p>Free satellite data plus past malaria records can forecast district-level malaria. This is a building block for early warning in a warming climate.</p>
+        </div>
+        <div class="facts">
+          <div class="fact"><b>32,172</b><span>locations analysed across 3 countries</span></div>
+          <div class="fact"><b>18 yrs</b><span>of data, 2000–2017</span></div>
+          <div class="fact"><b>43</b><span>measurements per place, per year</span></div>
+          <div class="fact"><b>0.99</b><span>R² for India’s 2017 predictions (1 = perfect)</span></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PROBLEM ===================== -->
+<section class="section alt" id="problem">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">The problem</span>
+      <h2>Malaria follows the climate, and the climate is changing</h2>
+      <p class="lede">Malaria remains one of the leading infectious causes of death. Heatwaves, floods and droughts are making outbreaks harder to anticipate.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card reveal" style="--c:var(--rose)">
+        <div class="icon-bubble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></div>
+        <h3>Half the world at risk</h3>
+        <p>Around 50% of people live in places where malaria can spread, mostly in Africa and South Asia.</p>
+      </div>
+      <div class="card reveal" style="--c:var(--orange)">
+        <div class="icon-bubble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l1 4H8zM8 7v13h8V7M11 11h2M11 15h2"/></svg></div>
+        <h3>Patchy data</h3>
+        <p>Case counts are often estimated from household surveys that are small, expensive and infrequent, so the true picture is easy to miss.</p>
+      </div>
+      <div class="card reveal" style="--c:var(--cyan)">
+        <div class="icon-bubble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a4 4 0 0 1 3-6 5 5 0 0 1 9.6 1.4A3.5 3.5 0 0 1 17 17H7M8 20l1-2M12 20l1-2M16 20l1-2"/></svg></div>
+        <h3>Many moving parts</h3>
+        <p>Temperature, rain, vegetation and poverty all shape where mosquitoes breed and who gets sick. They interact differently in every region and every year.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== EXPLORE ===================== -->
+<section class="section" id="explore">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Explore the data</span>
+      <h2>Watch 18 years of malaria and climate unfold</h2>
+      <p class="lede">Each red dot is a malaria hotspot. Press play or drag the slider to move through the years, and switch layers to see what the satellites measured beneath it.</p>
+    </div>
+
+    <div class="player" data-base="media/frames/" data-alt="Maps of South Asia showing malaria incidence against {set}">
+      <div class="top">
+        <div class="seg" role="group" aria-label="Choose map layers">
+          <button type="button" data-set="rain-temp" aria-pressed="true">Temperature &amp; rainfall</button>
+          <button type="button" data-set="ntl-veg" aria-pressed="false">Night-time lights &amp; vegetation</button>
+        </div>
+        <span style="font-size:14px;color:var(--muted)">Pakistan · India · Bangladesh</span>
+      </div>
+      <div class="stage">
+        <img src="media/frames/rain-temp-2000.jpg" alt="" width="1355" height="480">
+        <div class="year" aria-live="polite">2000</div>
+      </div>
+      <div class="controls">
+        <button type="button" class="play" aria-label="Play animation"></button>
+        <div class="scrub">
+          <label class="visually-hidden" for="year-range">Year</label>
+          <input id="year-range" type="range" min="2000" max="2017" step="1" value="2000">
+          <div class="ticks" aria-hidden="true"><span>2000</span><span>2005</span><span>2010</span><span>2017</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend-cards" data-for-set="rain-temp">
+      <div class="legend-card"><b><span class="swatch" style="background:linear-gradient(90deg,#0b57c7,#d8f1fb)"></span>Left: temperature</b>Darker blue is colder (mountains), pale blue is hotter. Warmer places were linked to <b>more</b> malaria.</div>
+      <div class="legend-card"><b><span class="swatch" style="background:linear-gradient(90deg,#f5f0a8,#9fd6b8,#8c8fcf,#1b1b4b)"></span>Right: rainfall</b>Yellow is dry, dark purple is very wet. Wetter districts were linked to <b>more</b> malaria.</div>
+      <div class="legend-card"><b><span class="swatch" style="background:#d61f1f;width:14px;height:14px;border-radius:50%"></span>Red dots: malaria</b>Bigger dots mean higher incidence of <i>Plasmodium falciparum</i>, the deadliest malaria parasite.</div>
+    </div>
+    <div class="legend-cards" data-for-set="ntl-veg" hidden>
+      <div class="legend-card"><b><span class="swatch" style="background:linear-gradient(90deg,#10103a,#5b52c9,#f4f1c0)"></span>Left: night-time lights</b>Brighter at night usually means more electricity and wealth. Darker, poorer areas had <b>more</b> malaria.</div>
+      <div class="legend-card"><b><span class="swatch" style="background:linear-gradient(90deg,#d9dcc9,#8aa27a,#1f3b22)"></span>Right: vegetation (NDVI)</b>Darker green means lusher land. Greener districts were linked to <b>more</b> malaria.</div>
+      <div class="legend-card"><b><span class="swatch" style="background:#d61f1f;width:14px;height:14px;border-radius:50%"></span>Red dots: malaria</b>Bigger dots mean higher incidence of <i>Plasmodium falciparum</i>, the deadliest malaria parasite.</div>
+    </div>
+
+    <!-- Trend over time + 2000 vs 2017 swipe -->
+    <div style="margin-top:72px">
+      <div class="reveal" style="max-width:760px">
+        <span class="eyebrow">Then and now</span>
+        <h3 style="font-size:clamp(24px,2.8vw,30px);margin-bottom:14px">Two ways to see the change</h3>
+        <div class="prose">
+          <p data-lens="everyone">On the left, how malaria has fallen across the region year by year. On the right, pick a layer and slide across the map to compare the start of the study with its final year.</p>
+          <p data-lens="policy">The trend line gives the regional direction of travel; the map shows the signals behind it. All of these signals are open, satellite-derived and refreshed every year, so the approach can be updated without new field surveys.</p>
+          <p data-lens="research">Left: mean <i>P. falciparum</i> incidence rate (PfIR) across surveyed locations in Pakistan, India and Bangladesh, with a projection beyond the study period. Right: Appendix B figures, DHS incidence overlaid on each earth-observation covariate for 2000 and 2017.</p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="align-items:start;margin-top:26px">
+        <div class="chart-card reveal" id="chart-pfir">
+          <div class="head">
+            <div>
+              <h3>Malaria incidence in South Asia, 2000&ndash;2026</h3>
+              <p class="sub">Mean <i>P. falciparum</i> incidence rate across surveyed locations, with the years beyond the study shown as a projection.</p>
+            </div>
+          </div>
+          <div class="chart-legend">
+            <span style="--c:var(--rose)"><i></i>Observed, 2000&ndash;2017</span>
+            <span style="--c:var(--cyan)"><i style="background:repeating-linear-gradient(90deg,var(--cyan) 0 4px,transparent 4px 7px)"></i>Projected, 2018&ndash;2026</span>
+          </div>
+          <div class="chart-box"><canvas role="img" aria-label="Line chart of mean malaria incidence rate per year in South Asia, falling from 2000 to 2017, with a projection to 2026."></canvas></div>
+          <p class="chart-foot"><span data-placeholder>Illustrative figures &mdash; to be replaced with the final series</span></p>
+        </div>
+
+        <div class="chart-card reveal">
+          <div class="head">
+            <div>
+              <h3>The landscape behind the trend</h3>
+              <p class="sub">Drag the handle to compare the first and last year of the study, one satellite layer at a time.</p>
+            </div>
+          </div>
+          <div class="seg" role="group" aria-label="Choose indicator" data-compare-switch="cmp-years" data-caption="cmp-years-cap" style="margin:12px 0 14px">
+            <button type="button" aria-pressed="true" data-before="media/figures/ntl-2000.jpg" data-after="media/figures/ntl-2017.jpg" data-alt-before="Night-time lights and malaria, 2000" data-alt-after="Night-time lights and malaria, 2017" data-caption="Areas that are dark at night (lower income) carry more malaria.">Night lights</button>
+            <button type="button" aria-pressed="false" data-before="media/figures/ndvi-2000.jpg" data-after="media/figures/ndvi-2017.jpg" data-alt-before="Vegetation and malaria, 2000" data-alt-after="Vegetation and malaria, 2017" data-caption="Greener districts are associated with higher malaria risk.">Vegetation</button>
+            <button type="button" aria-pressed="false" data-before="media/figures/rain-2000.jpg" data-after="media/figures/rain-2017.jpg" data-alt-before="Rainfall and malaria, 2000" data-alt-after="Rainfall and malaria, 2017" data-caption="Higher rainfall is linked to higher malaria risk.">Rainfall</button>
+            <button type="button" aria-pressed="false" data-before="media/figures/temp-2000.jpg" data-after="media/figures/temp-2017.jpg" data-alt-before="Temperature and malaria, 2000" data-alt-after="Temperature and malaria, 2017" data-caption="Hotter districts are linked to higher malaria risk.">Temperature</button>
+          </div>
+          <div class="compare" id="cmp-years">
+            <img class="before" src="media/figures/ntl-2000.jpg" alt="Night-time lights and malaria, 2000" width="1100" height="850">
+            <div class="after"><img src="media/figures/ntl-2017.jpg" alt="Night-time lights and malaria, 2017" width="1100" height="850"></div>
+            <div class="handle"></div>
+            <span class="lbl l">2000</span><span class="lbl r">2017</span>
+            <input type="range" min="0" max="100" value="50" aria-label="Slide to compare 2000 and 2017">
+          </div>
+          <p class="chart-foot"><span id="cmp-years-cap">Areas that are dark at night (lower income) carry more malaria.</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== METHOD ===================== -->
+<section class="section alt" id="method">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">How it works</span>
+      <h2>Teaching a model to read the landscape over time</h2>
+      <p class="lede" data-lens="everyone policy">The model learns the way an experienced field officer might: it looks at how each place has changed year after year and spots the pattern that comes before malaria rises.</p>
+      <p class="lede" data-lens="research">A four-layer, 100-unit-per-layer LSTM ingests 17 annual time steps of 43 features per location, followed by a fully connected layer and linear regression to output next-step incidence.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step reveal">
+        <h3>Gather</h3>
+        <p data-lens="everyone policy">For every place, collect 43 measurements a year: monthly heat, rain and greenery, night-time brightness, location, and last year’s malaria.</p>
+        <p data-lens="research">Merge DHS incidence with AReNA covariates and DMSP-OLS/VIIRS night-time lights (digital number 0–63) per cluster.</p>
+      </div>
+      <div class="step reveal">
+        <h3>Line up in time</h3>
+        <p data-lens="everyone policy">Stack those yearly snapshots, from 2000 to 2016, into a timeline for each of the 32,172 places.</p>
+        <p data-lens="research">Batch per country: 18 time steps × 43 features per location (I<sub>t−n</sub> = 2000 … I<sub>t−1</sub> = 2016).</p>
+      </div>
+      <div class="step reveal">
+        <h3>Learn the pattern</h3>
+        <p data-lens="everyone policy">A type of AI built for sequences (an LSTM) learns which changes tend to come before malaria goes up or down.</p>
+        <p data-lens="research">4 stacked LSTM layers × 100 units, chosen by ablation over depth (1–4), width (100/200) and epochs.</p>
+      </div>
+      <div class="step reveal">
+        <h3>Predict</h3>
+        <p data-lens="everyone policy">It then estimates the malaria rate for 2017 in every district, and we check that against what really happened.</p>
+        <p data-lens="research">Fully connected layer + linear regression output. Evaluated by RMSE and R² on held-out time (2017) and held-out space (20%).</p>
+      </div>
+    </div>
+
+    <div class="featbar reveal" id="features">
+      <h3>What the model sees: 43 measurements per place, per year</h3>
+      <p class="sub">Hover or tap a block to see what it measures.</p>
+      <div class="bar43" role="list"></div>
+      <div class="featkey"></div>
+      <div class="featinfo" aria-live="polite">Three-quarters of the inputs are monthly climate and vegetation readings, which capture the seasons mosquitoes depend on.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== RESULTS ===================== -->
+<section class="section" id="results">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Results</span>
+      <h2>How close did the predictions get?</h2>
+      <p class="lede" data-lens="everyone">We hid the real 2017 numbers from the model, asked it to predict them, and then compared. We also ran the same test on an earlier AI method (Conv-LSTM).</p>
+      <p class="lede" data-lens="policy">Accuracy was strongest in India, where there is far more data, and weaker in Pakistan and Bangladesh. In every country the new model beat the comparison method on the 2017 forecast.</p>
+      <p class="lede" data-lens="research">Country-specific R² and RMSE for the spatio-temporal split (predicting 2017) and the spatial split (random held-out year), against Conv-LSTM and Random Forest baselines.</p>
+    </div>
+
+    <!-- Map compare -->
+    <div class="grid-2" style="align-items:start">
+      <div class="reveal">
+        <div class="compare" id="cmp-models">
+          <img class="before" src="media/figures/map-mlstm.jpg" alt="Bivariate map of true versus predicted malaria incidence using the M-LSTM model" width="1600" height="1236">
+          <div class="after"><img src="media/figures/map-convlstm.jpg" alt="Bivariate map of true versus predicted malaria incidence using the Conv-LSTM model" width="1600" height="1236"></div>
+          <div class="handle"></div>
+          <span class="lbl l">Our model (M-LSTM)</span><span class="lbl r">Conv-LSTM</span>
+          <input type="range" min="0" max="100" value="50" aria-label="Slide to compare the two models' prediction maps">
+        </div>
+        <p class="compare-caption">True vs predicted 2017 malaria incidence for each district (20% test set). Drag the handle to compare.</p>
+      </div>
+      <div class="reveal">
+        <h3 style="font-size:28px;margin-bottom:12px">Reading the map</h3>
+        <div class="prose">
+          <p data-lens="everyone policy">Each district is coloured by <b>both</b> the real malaria level and the predicted level. When the colours are purple, the prediction matched reality.</p>
+          <p data-lens="research">Bivariate choropleth: actual incidence on the pink axis, predicted on the blue axis. Diagonal (purple) cells indicate agreement. The zoomed inset shows the high-burden eastern-India cluster.</p>
+        </div>
+        <div class="bivar-key" style="grid-template-columns:1fr">
+          <div><i style="background:#2d1f8a"></i><span><b>Dark purple: got it right</b>High malaria, and the model predicted high malaria.</span></div>
+          <div><i style="background:#e052a4"></i><span><b>Pink: missed risk</b>Real malaria was higher than predicted.</span></div>
+          <div><i style="background:#48a9d6"></i><span><b>Blue: false alarm</b>Predicted higher than it really was.</span></div>
+        </div>
+        <p class="callout" style="margin-top:16px"><b>Look at eastern India.</b> Our model paints the hotspot dark purple, meaning a correct match. Conv-LSTM shows more pink, meaning it missed districts where malaria was high.</p>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid-2" style="margin-top:64px;align-items:stretch">
+      <div class="chart-card reveal" id="chart-r2">
+        <div class="head">
+          <div>
+            <h3>How much of the real pattern each model captured</h3>
+            <p class="sub">R² for 2017 predictions: 1 means perfect, 0 means no better than guessing the average.</p>
+          </div>
+        </div>
+        <div class="chart-legend"><span style="--c:var(--orange)"><i></i>M-LSTM (this study)</span><span style="--c:var(--cyan)"><i></i>Conv-LSTM</span></div>
+        <div class="chart-box"><canvas role="img" aria-label="Bar chart of R-squared by country. M-LSTM: Pakistan 0.33, India 0.99, Bangladesh 0.10. Conv-LSTM: 0.09, 0.18, 0.01."></canvas></div>
+        <p class="chart-foot"><span>Source: Nazir et al. 2023</span></p>
+      </div>
+
+      <div class="chart-card reveal" id="chart-rmse">
+        <div class="head">
+          <div>
+            <h3>Size of the prediction error</h3>
+            <p class="sub">Lower is better. The scale is logarithmic because the errors differ by orders of magnitude.</p>
+          </div>
+          <div class="seg" role="group" aria-label="Choose evaluation">
+            <button type="button" data-split="temporal" aria-pressed="true">Future year</button>
+            <button type="button" data-split="spatial" aria-pressed="false">Unseen places</button>
+          </div>
+        </div>
+        <div class="chart-legend"><span style="--c:var(--orange)"><i></i>M-LSTM (this study)</span><span style="--c:var(--cyan)"><i></i><span class="other-name">Conv-LSTM</span></span></div>
+        <div class="chart-box"><canvas role="img" aria-label="Bar chart of prediction error (RMSE) by country for M-LSTM and a comparison model."></canvas></div>
+        <p class="sub" data-split-note="temporal" style="margin-top:10px">Trained on 2000–2016, predicting 2017. M-LSTM had lower error than Conv-LSTM in all three countries.</p>
+        <p class="sub" data-split-note="spatial" hidden style="margin-top:10px">Predicting places the model never saw (random 20%). Random Forest had lower error in India and Bangladesh, and M-LSTM was better in Pakistan.</p>
+        <p class="chart-foot"><span>Source: Nazir et al. 2023</span></p>
+      </div>
+    </div>
+
+    <!-- Scatter -->
+    <div class="reveal" style="margin-top:64px">
+      <h3 style="font-size:28px;margin-bottom:6px">Predicted vs actual, district by district</h3>
+      <p style="color:var(--ink-2);max-width:70ch">Each circle is a location. If a prediction were perfect it would sit exactly on the red line.</p>
+      <div class="tabs seg" data-tabs role="tablist" aria-label="Country">
+        <button type="button" role="tab" aria-selected="true" aria-controls="sc-in">India</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="sc-pk">Pakistan</button>
+      </div>
+      <div id="sc-in" role="tabpanel" class="pair">
+        <figure><img class="zoomable" src="media/figures/scatter-in-mlstm.jpg" alt="Scatter plot for India, M-LSTM: points lie tightly along the diagonal" width="1000" height="600" loading="lazy"><figcaption>Our model (M-LSTM)</figcaption></figure>
+        <figure><img class="zoomable" src="media/figures/scatter-in-convlstm.jpg" alt="Scatter plot for India, Conv-LSTM: points spread widely below the diagonal" width="1000" height="600" loading="lazy"><figcaption>Conv-LSTM</figcaption></figure>
+      </div>
+      <div id="sc-pk" role="tabpanel" class="pair" hidden>
+        <figure><img class="zoomable" src="media/figures/scatter-pk-mlstm.jpg" alt="Scatter plot for Pakistan, M-LSTM" width="1000" height="600" loading="lazy"><figcaption>Our model (M-LSTM)</figcaption></figure>
+        <figure><img class="zoomable" src="media/figures/scatter-pk-convlstm.jpg" alt="Scatter plot for Pakistan, Conv-LSTM" width="1000" height="600" loading="lazy"><figcaption>Conv-LSTM</figcaption></figure>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== IMPACT ===================== -->
+<section class="section dark on-dark" id="impact">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Implications</span>
+      <h2>Implications for public health practice</h2>
+      <p class="lede">Climate change is speeding up and worsening the spread of infectious disease. Forecasts at the district level turn that global threat into local, actionable information.</p>
+    </div>
+    <div class="impact">
+      <div class="card reveal" style="--c:var(--cyan)">
+        <div class="icon-bubble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3>Earlier warning</h3>
+        <p>District-level estimates can feed national and regional early-warning systems, helping programmes act before transmission peaks.</p>
+      </div>
+      <div class="card reveal" style="--c:var(--orange)">
+        <div class="icon-bubble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg></div>
+        <h3>Better targeting</h3>
+        <p>Knowing which districts are likely to rise helps direct bed nets, spraying, testing and staff to where they are needed most.</p>
+      </div>
+      <div class="card reveal" style="--c:var(--purple)">
+        <div class="icon-bubble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"/></svg></div>
+        <h3>Reusable approach</h3>
+        <p>The method needs no disease-specific assumptions. It can be adapted to other climate-sensitive infections such as dengue or cholera, and to other regions.</p>
+      </div>
+    </div>
+    <div class="caveats" data-lens="research">
+      <b>Limitations:</b> annual temporal resolution; DHS-derived incidence is survey-based and modelled; performance is heterogeneous across countries and drops with smaller sample size. In the spatial split, Random Forest achieved lower RMSE for India and Bangladesh. In the ablation, 3 × 200 gave marginally lower RMSE (0.0074) than the selected 4 × 100 (0.0076).
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TEAM ===================== -->
+<section class="section alt" id="team">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Team</span>
+      <h2>The people behind this study</h2>
+    </div>
+    <div class="people">
+      <div class="person reveal"><div class="avatar" style="--c:var(--navy)">UN</div><b>Usman Nazir</b><span>LUMS</span></div>
+      <div class="person reveal"><div class="avatar" style="--c:var(--cyan-solid)">AE</div><b>Ahzam Ejaz</b><span>LUMS</span></div>
+      <div class="person reveal"><div class="avatar" style="--c:var(--purple)">MTQ</div><b>Muhammad Talha Quddoos</b><span>LUMS</span></div>
+      <div class="person reveal"><div class="avatar" style="--c:var(--orange-solid)">MU</div><b>Momin Uppal</b><span>LUMS</span></div>
+      <div class="person reveal"><div class="avatar" style="--c:var(--rose)">SK</div><b>Sara Khalid</b><span>University of Oxford</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== OUTPUTS ===================== -->
+<section class="section" id="outputs">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Publications &amp; outputs</span>
+      <h2>Read, watch, reuse</h2>
+    </div>
+    <ul class="pubs">
+      <li class="pub reveal">
+        <div>
+          <span class="kind">Conference paper · NeurIPS 2023</span>
+          <h3>Towards a spatio-temporal deep learning approach to predict malaria outbreaks using earth observation measurements in South Asia</h3>
+          <div class="by">Nazir U, Ejaz A, Quddoos MT, Uppal M, Khalid S · NeurIPS 2023 Workshop on Tackling Climate Change with Machine Learning</div>
+        </div>
+        <div class="actions">
+          <a class="btn btn-outline btn-sm" href="https://www.climatechange.ai/papers/neurips2023/66" target="_blank" rel="noopener">Paper page</a>
+          <a class="btn btn-outline btn-sm" href="https://slideslive.com/39012777" target="_blank" rel="noopener">Talk</a>
+        </div>
+      </li>
+      <li class="pub reveal">
+        <div>
+          <span class="kind">Journal abstract · The Lancet Planetary Health</span>
+          <h3>Predicting malaria outbreaks using earth observation measurements and spatiotemporal deep learning modelling: a South Asian case study from 2000 to 2017</h3>
+          <div class="by">Nazir U, Quddoos MT, Uppal M, Khalid S · The Lancet Planetary Health 2024; 8: S17</div>
+        </div>
+        <div class="actions">
+          <a class="btn btn-outline btn-sm" href="https://doi.org/10.1016/S2542-5196(24)00082-2" target="_blank" rel="noopener">DOI</a>
+          <a class="btn btn-outline btn-sm" href="https://www.thelancet.com/journals/lanplh/article/PIIS2542-5196(24)00082-2/fulltext" target="_blank" rel="noopener">Full text</a>
+        </div>
+      </li>
+    </ul>
+
+    <div class="poster" style="margin-top:56px">
+      <img class="zoomable reveal" src="media/poster-web.jpg" alt="Conference poster summarising the study: motivation, dataset, M-LSTM architecture, qualitative maps, results table and scatter plots" width="2400" height="1350" loading="lazy">
+      <div class="reveal">
+        <span class="eyebrow">Conference poster</span>
+        <h3 style="font-size:28px;margin-bottom:12px">The whole study on one page</h3>
+        <p style="color:var(--ink-2)">Presented at NeurIPS 2023: the motivation, the dataset, the model and every result on a single page. Click it to view full size.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CITE ===================== -->
+<section class="section alt" id="cite">
+  <div class="wrap narrow">
+    <div class="cite-box" data-cite>
+      <div class="head">
+        <div>
+          <span class="eyebrow">Using this work?</span>
+          <h3>Cite this study</h3>
+        </div>
+        <div class="seg" role="group" aria-label="Citation format">
+          <button type="button" data-format="apa" aria-pressed="true">APA</button>
+          <button type="button" data-format="vancouver" aria-pressed="false">Vancouver</button>
+          <button type="button" data-format="bibtex" aria-pressed="false">BibTeX</button>
+          <button type="button" data-format="ris" aria-pressed="false">RIS</button>
+        </div>
+      </div>
+      <pre class="cite-text" aria-live="polite"></pre>
+      <div class="cite-actions">
+        <button type="button" class="btn btn-primary btn-sm" data-copy>Copy citation</button>
+        <span class="toast" role="status"></span>
+      </div>
+      <div class="share" data-share-text="Predicting malaria outbreaks from space: satellite data + deep learning across South Asia (PHI Lab, Oxford × LUMS)">
+        <span class="lbl">Share:</span>
+        <a class="btn btn-outline btn-sm" data-share="linkedin" href="#">LinkedIn</a>
+        <a class="btn btn-outline btn-sm" data-share="bluesky" href="#">Bluesky</a>
+        <a class="btn btn-outline btn-sm" data-share="x" href="#">X</a>
+        <a class="btn btn-outline btn-sm" data-share="email" href="#">Email</a>
+        <a class="btn btn-outline btn-sm" data-share="copy" href="#">Copy link</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <a class="brand" href="../../index.html"><img src="../../assets/img/phi-logo-white.png" alt=""><span><b>PHI LAB</b><small>University of Oxford</small></span></a>
+        <p><b style="color:#fff">AI for Planet and Health.</b> Using AI, satellite imagery and real-world data to understand disease and close gaps in global health.</p>
+        <div class="social" data-social aria-label="PHI Lab online"></div>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="../../research.html">Research</a></li>
+          <li><a href="../../research.html#publications">Publications</a></li>
+          <li><a href="../../about.html">About the lab</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:oxfordphi@gmail.com">oxfordphi@gmail.com</a></li>
+          <li><a href="https://www.ndorms.ox.ac.uk/" target="_blank" rel="noopener">NDORMS, University of Oxford</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">Produced by the PHI Lab, University of Oxford. Preliminary results — not for circulation without written permission. © <span data-year>2026</span> PHI Lab, University of Oxford</div>
+  </div>
+</footer>
+
+<script type="application/json" id="cite-data">
+{
+  "apa": { "file": "Nazir2023_malaria.txt", "text": "Nazir, U., Ejaz, A., Quddoos, M. T., Uppal, M., & Khalid, S. (2023). Towards a spatio-temporal deep learning approach to predict malaria outbreaks using earth observation measurements in South Asia. NeurIPS 2023 Workshop on Tackling Climate Change with Machine Learning. https://www.climatechange.ai/papers/neurips2023/66\n\nNazir, U., Quddoos, M. T., Uppal, M., & Khalid, S. (2024). Predicting malaria outbreaks using earth observation measurements and spatiotemporal deep learning modelling: A South Asian case study from 2000 to 2017. The Lancet Planetary Health, 8, S17. https://doi.org/10.1016/S2542-5196(24)00082-2" },
+  "vancouver": { "file": "Nazir2023_malaria_vancouver.txt", "text": "1. Nazir U, Ejaz A, Quddoos MT, Uppal M, Khalid S. Towards a spatio-temporal deep learning approach to predict malaria outbreaks using earth observation measurements in South Asia. In: NeurIPS 2023 Workshop on Tackling Climate Change with Machine Learning; 2023. Available from: https://www.climatechange.ai/papers/neurips2023/66\n\n2. Nazir U, Quddoos MT, Uppal M, Khalid S. Predicting malaria outbreaks using earth observation measurements and spatiotemporal deep learning modelling: a South Asian case study from 2000 to 2017. Lancet Planet Health. 2024;8:S17. doi:10.1016/S2542-5196(24)00082-2" },
+  "bibtex": { "file": "Nazir2023_malaria.bib", "text": "@inproceedings{nazir2023malaria,\n  title     = {Towards a spatio-temporal deep learning approach to predict malaria outbreaks using earth observation measurements in South Asia},\n  author    = {Nazir, Usman and Ejaz, Ahzam and Quddoos, Muhammad Talha and Uppal, Momin and Khalid, Sara},\n  booktitle = {NeurIPS 2023 Workshop on Tackling Climate Change with Machine Learning},\n  year      = {2023},\n  url       = {https://www.climatechange.ai/papers/neurips2023/66}\n}\n\n@article{nazir2024malaria,\n  title   = {Predicting malaria outbreaks using earth observation measurements and spatiotemporal deep learning modelling: a South Asian case study from 2000 to 2017},\n  author  = {Nazir, Usman and Quddoos, Muhammad Talha and Uppal, Momin and Khalid, Sara},\n  journal = {The Lancet Planetary Health},\n  volume  = {8},\n  pages   = {S17},\n  year    = {2024},\n  doi     = {10.1016/S2542-5196(24)00082-2}\n}" },
+  "ris": { "file": "Nazir2023_malaria.ris", "text": "TY  - CONF\nTI  - Towards a spatio-temporal deep learning approach to predict malaria outbreaks using earth observation measurements in South Asia\nAU  - Nazir, Usman\nAU  - Ejaz, Ahzam\nAU  - Quddoos, Muhammad Talha\nAU  - Uppal, Momin\nAU  - Khalid, Sara\nT2  - NeurIPS 2023 Workshop on Tackling Climate Change with Machine Learning\nPY  - 2023\nUR  - https://www.climatechange.ai/papers/neurips2023/66\nER  - \n\nTY  - JOUR\nTI  - Predicting malaria outbreaks using earth observation measurements and spatiotemporal deep learning modelling: a South Asian case study from 2000 to 2017\nAU  - Nazir, Usman\nAU  - Quddoos, Muhammad Talha\nAU  - Uppal, Momin\nAU  - Khalid, Sara\nJO  - The Lancet Planetary Health\nVL  - 8\nSP  - S17\nPY  - 2024\nDO  - 10.1016/S2542-5196(24)00082-2\nER  - " }
+}
+</script>
+
+<script>
+/* 43-feature breakdown for the "What the model sees" bar */
+(function () {
+  const groups = [
+    { n: 12, c: "var(--orange)", name: "Temperature", info: "<b>Temperature × 12:</b> average temperature for each month. Mosquitoes and the malaria parasite both develop faster in warmth." },
+    { n: 12, c: "var(--cyan)", name: "Rainfall", info: "<b>Rainfall × 12:</b> total rain for each month. Standing water after rain is where mosquitoes breed." },
+    { n: 12, c: "#4f8a3c", name: "Vegetation", info: "<b>Vegetation (NDVI) × 12:</b> how green the land is each month. Lush vegetation offers mosquitoes shade and humidity." },
+    { n: 1, c: "var(--navy)", name: "Night lights", info: "<b>Night-time lights × 1:</b> brightness seen from space at night, a proxy for electricity, wealth and access to healthcare." },
+    { n: 1, c: "var(--rose)", name: "Last year’s malaria", info: "<b>Previous malaria rate × 1:</b> last year’s incidence. Places with malaria tend to keep it." },
+    { n: 5, c: "#8a93a6", name: "Place", info: "<b>Place × 5:</b> latitude, longitude, urban or rural, country and province." },
+  ];
+  const bar = document.querySelector(".bar43"), key = document.querySelector(".featkey"), info = document.querySelector(".featinfo");
+  if (!bar) return;
+  const def = info.innerHTML;
+  const hot = (i) => {
+    bar.classList.toggle("hovering", i != null);
+    bar.querySelectorAll("button").forEach((b) => b.classList.toggle("hot", +b.dataset.g === i));
+    info.innerHTML = i == null ? def : groups[i].info;
+  };
+  groups.forEach((g, i) => {
+    for (let k = 0; k < g.n; k++) {
+      const b = document.createElement("button");
+      b.type = "button"; b.dataset.g = i; b.style.cssText = `--c:${g.c};flex:1`;
+      b.setAttribute("aria-label", `${g.name}, ${k + 1} of ${g.n}`); b.setAttribute("role", "listitem");
+      b.addEventListener("mouseenter", () => hot(i)); b.addEventListener("focus", () => hot(i)); b.addEventListener("click", () => hot(i));
+      bar.append(b);
+    }
+    const kb = document.createElement("button");
+    kb.type = "button"; kb.style.setProperty("--c", g.c);
+    kb.innerHTML = `<i></i><span><b>${g.n}</b> ${g.name}</span>`;
+    kb.addEventListener("mouseenter", () => hot(i)); kb.addEventListener("focus", () => hot(i)); kb.addEventListener("click", () => hot(i));
+    key.append(kb);
+  });
+  bar.addEventListener("mouseleave", () => hot(null)); key.addEventListener("mouseleave", () => hot(null));
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="charts.js"></script>
+<script src="../../assets/js/site.js"></script>
+</body>
+</html>
