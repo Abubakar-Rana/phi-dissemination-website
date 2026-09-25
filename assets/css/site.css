@@ -103,8 +103,9 @@ button { font: inherit; }
 .site-footer .social svg { width: 24px; height: 24px; }
 @media (max-width: 880px) { .nav .social { margin: 8px 0 0; padding: 8px 0 0; border-left: 0; border-top: 1px solid rgba(255,255,255,.18); } }
 
-/* Short viewports (landscape phones): free the sticky chrome */
-@media (max-height: 560px) {
+/* Landscape phones only: free the sticky chrome on short touch screens.
+   `pointer: coarse` keeps laptops with short browser windows sticky. */
+@media (max-height: 560px) and (pointer: coarse) {
   .site-header { position: static; }
   .subnav { position: static; }
 }
